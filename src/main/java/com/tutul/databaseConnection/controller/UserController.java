@@ -30,6 +30,7 @@ public class UserController {
 
     @PutMapping("/user/{id}")
     User updateUser(@RequestBody User newUser, @PathVariable Long id){
+        System.out.println(newUser);
         return userRepository.findById(id)
                 .map(user -> {
                     user.setName(newUser.getName());
@@ -37,5 +38,13 @@ public class UserController {
                     user.setEmail(newUser.getEmail());
                     return userRepository.save(user);
                 }).orElseThrow(()->new UserNotFoundException(id));
+    }
+    @DeleteMapping("/user/{id}")
+    String deleteUser(@PathVariable Long id){
+        if(!userRepository.existsById(id)){
+            throw new UserNotFoundException(id);
+        }
+        userRepository.deleteById(id);
+        return "User with id "+id+" is deleted successfully.";
     }
 }
